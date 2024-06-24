@@ -9,7 +9,7 @@ api_key = ""
 api_base = ""
 role_jp_path = "./hutao/japan_profile.jsonl"
 output_path = "./hutao/hutao_profile_jp.json"
-role_eng_path = "./RoleBench/instruction-eng/role-specific-Abraham Lincoln.jsonl"
+role_eng_path = "./RoleBench/instructions-eng/role-specific-Abraham Lincoln.jsonl"
 ##加载jsonl文件
 def open_jsonl(jsonl_file_path):
     data_list = []
