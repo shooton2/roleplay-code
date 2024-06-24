@@ -5,9 +5,8 @@ from openai import OpenAI
 import jsonlines
 import random
 
-api_key = "sk-8XGqiRc9787Q19pnlyrGu5L6Gm7z81fIv2Rv1JWlmmCs6GkY"
-api_base = "https://api.chatanywhere.tech/v1"
-file_path = "./hutao/japan_profile.jsonl"
+api_key = ""
+api_base = ""
 out_question_path = "./lincoln.jsonl"##输出路径
 role_eng_path = "./RoleBench/instructions-eng/role-specific-Abraham Lincoln.jsonl" ##输入路径
 num_question = 1  ##生成问题和回答的轮次
