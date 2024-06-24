@@ -9,9 +9,11 @@ https://huggingface.co/datasets/ZenMoore/RoleBench
 setting your output directory from every .py file.
 
 2.running role_profile_ge.py
+example:Abraham Lincoln
 This file is used to generate role profile.
 
 3.running question_answer_ge.py
+example:Abraham Lincoln
 This file is used to generate a given question and answer.
 In this section,user should give the topic and sentiment.Then , gpt-3.5 will generate one question based on the role_profile and topic and reply with the given sentiment.
 
