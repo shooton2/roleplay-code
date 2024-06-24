@@ -29,8 +29,8 @@ def open_jsonl(jsonl_file_path):
 data_list = open_jsonl(role_eng_path)
 role = data_list
 
-api_key = "sk-8XGqiRc9787Q19pnlyrGu5L6Gm7z81fIv2Rv1JWlmmCs6GkY"
-api_base = "https://api.chatanywhere.tech/v1"
+api_key = ""
+api_base = ""
 
 
 llm = OpenAI(api_key=api_key,base_url=api_base)
