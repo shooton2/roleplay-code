@@ -24,3 +24,7 @@ In this section,user should give the topic and sentiment.Then , gpt-3.5 will gen
 
 This file is used to analyse the given dialogues(multi-numbers) how about the role's sentiment(emotion).
 
+5.count_rolebench.py
+
+record the number of dialogues.
+
