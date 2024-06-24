@@ -5,8 +5,8 @@ import json
 import glob
 import os
 
-api_key = "sk-8XGqiRc9787Q19pnlyrGu5L6Gm7z81fIv2Rv1JWlmmCs6GkY"
-api_base = "https://api.chatanywhere.tech/v1"
+api_key = ""
+api_base = ""
 folder_path = "./RoleBench/profiles-eng/"
 output_folder = "./RoleBench/dialogue_sentiment/"
 def read_jsonl_files(folder_path):
