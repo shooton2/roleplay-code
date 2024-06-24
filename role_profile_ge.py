@@ -50,6 +50,6 @@ prompt_en = f"""
 response = llm.chat.completions.create(messages=[{"role":"user","content":prompt_en}],model="gpt-3.5-turbo")
 profile_out = response.choices[0].message.content
 print(profile_out)
-#with open(output_path,"w",encoding="utf-8") as w:
-#    w.write(profile)
+with open(output_path,"w",encoding="utf-8") as w:
+    w.write(profile_out)
 
