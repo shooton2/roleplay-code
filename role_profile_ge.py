@@ -5,7 +5,8 @@ import openai
 from openai import OpenAI
 import re
 import json
-
+api_key = ""
+api_base = ""
 role_jp_path = "./hutao/japan_profile.jsonl"
 output_path = "./hutao/hutao_profile_jp.json"
 role_eng_path = "./RoleBench/instruction-eng/role-specific-Abraham Lincoln.jsonl"
@@ -26,24 +27,27 @@ def open_jsonl(jsonl_file_path):
                 print(f"Error decoding JSON: {e} - Line: {line}")
     return data_list
 
-data_list = open_jsonl(role_eng_path)
-role = data_list
 
-api_key = ""
-api_base = ""
+role_profiles = open_jsonl(role_eng_path)
+profile = []
+for i,role_profile in enumerate(role_profiles):
+    profile.append((role_profile["instruction"],role_profile["answer"]))
+    if i > 50 :
+        break 
+
 
 
 llm = OpenAI(api_key=api_key,base_url=api_base)
-prompt_jp = f"""
-请根据给出的'角色介绍',其中'角色介绍'为日本语,总结出角色的'名前'、'誕生日'、'キャラクター'、'経歴'、'趣味'、'特技'、'夢'、'人間関係'、'好きな食べ物'、'嫌いな食べ物'和'その他'。
-最后输出为json格式，并且输出日本语。
+prompt_en = f"""
+请根据给出的'角色介绍',其中'角色介绍'为英语,总结出角色的'Name', 'Birthday', 'Character', 'Career', 'Hobbies', 'Special Skills', 'Dreams', 'Relationships', 'Favorite Food', 'Nasty Food', , 'Other'。
+最后输出为json格式，并且输出英语。
 
 
 '角色介绍':
-{role}
+{profile}
 """
 
-response = llm.chat.completions.create(messages=[{"role":"user","content":prompt_jp}],model="gpt-3.5-turbo")
+response = llm.chat.completions.create(messages=[{"role":"user","content":prompt_en}],model="gpt-3.5-turbo")
 profile = response.choices[0].message.content
 print(profile)
 #with open(output_path,"w",encoding="utf-8") as w:
