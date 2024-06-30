@@ -5,15 +5,26 @@ from openai import OpenAI
 import jsonlines
 import random
 
-api_key = ""
-api_base = ""
-out_question_path = "./lincoln.jsonl"##输出路径
-role_eng_path = "./RoleBench/instructions-eng/role-specific-Abraham Lincoln.jsonl" ##输入路径
-num_question = 1  ##生成问题和回答的轮次
+api_key = "sk-HUoJ0dhvM080s0Z1sW6txqmaXMiUbiRzMorF67oqJXfs9ScO"
+api_base = "https://api.chatanywhere.tech/v1"
+file_path = "./hutao/japan_profile.jsonl"
+profile_path = "./output/profile/role_profile_Alvy_Singer.json"##角色profile生成的路径
+
+out_question_path = "./output/multi_round_dialog/lincoln.jsonl"##输出路径
+role_eng_path = "./RoleBench/instructions-eng/role-specific-Alvy Singer.jsonl" ##输入路径
+num_question = 10  ##生成问题和回答的轮次
 
 #用户指定
 sentiment = "happiness"
-topic = "Art and culture"
+
+
+###读取第一阶段生成的role profile
+def open_profile(profile_path):
+    with open(profile_path,"r",encoding="utf-8") as r:
+        profile = r.read()
+        profile = json.loads(profile)
+    return profile
+
 
 
 def open_jsonl(jsonl_file_path):
@@ -34,12 +45,13 @@ def open_jsonl(jsonl_file_path):
 
 
 
-role_profiles = open_jsonl(role_eng_path)
-profile = []
-for i,role_profile in enumerate(role_profiles):
-    profile.append((role_profile["instruction"],role_profile["answer"]))
-    if i > 50 :
-        break 
+#role_profiles = open_jsonl(role_eng_path)
+#profile_list = []
+#for i,role_profile in enumerate(role_profiles):
+#    profile_list.append((role_profile["instruction"],role_profile["answer"]))
+#    if i > 50 :
+#        break 
+profile = open_profile(profile_path)
 
 
 ###情感分类
@@ -58,32 +70,53 @@ random_topic = random.randint(0,29)
 #sentiment = emotion_labels_eng[random_emo]
 
 
-print(f"生成的topic:{topic}\n生成的sentiment:{sentiment}")
+###生成英文的qa问答
+def generate_english_question_answer(out_question_path,topic,sentiment):
 
+    with open(out_question_path,"a",encoding="utf-8") as w:
+        writer = jsonlines.Writer(w)
+        for i in range(num_question):
+            prompt1 = f"""
+            请根据给出的'角色介绍'，用英语生成1个与{topic}相关的问题。只输出问题本身。
+            '角色介绍':
+            {profile}
+            """
+            llm = OpenAI(api_key=api_key,base_url=api_base)
+            response = llm.chat.completions.create(messages=[{"role":"user","content":prompt1}],model="gpt-3.5-turbo")
+            instruction = response.choices[0].message.content
+            print(instruction)
+            ##生成5轮对话
+            prompt2 = f"""
+            请'ai'扮演"{profile["Name"]}",以{sentiment}的心情,使用英语讨论'问题'，"ai"和'user'分别对话5次，分别根据对方的回答进行回复，使用json格式:
+            ["role":"ai","content":"","role":"user","content":""]
 
-with open(out_question_path,"w",encoding="utf-8") as w:
-    writer = jsonlines.Writer(w)
-    for i in range(num_question):
+            '问题':
+            {instruction}
+            '角色介绍':
+            {profile}
+            """
+            answer = llm.chat.completions.create(messages=[{"role":"user","content":prompt2}],model="gpt-3.5-turbo")
+            answer = answer.choices[0].message.content
+            print(answer)
+            writer.write({"question":instruction.strip(),"answer":answer.strip()})
+        writer.close()
 
-        prompt1 = f"""
-        请根据给出的'角色介绍'，用英语生成1个与{topic}相关的问题。只输出问题本身。
-        '角色介绍':
-        {profile}
-        """
-        llm = OpenAI(api_key=api_key,base_url=api_base)
-        response = llm.chat.completions.create(messages=[{"role":"user","content":prompt1}],model="gpt-3.5-turbo")
-        instruction = response.choices[0].message.content
-        print(instruction)
-        prompt2 = f"""
-        请扮演'角色介绍'里的角色,以{sentiment}的心情,用英语回答给出的问题。
-        '问题':
-        {instruction}
-        '角色介绍':
-        {profile}
-        """
-        answer = llm.chat.completions.create(messages=[{"role":"user","content":prompt2}],model="gpt-3.5-turbo")
-        answer = answer.choices[0].message.content
-        print(answer)
-        writer.write({"question":instruction.strip(),"answer":answer.strip()})
-    writer.close()
+#for topics in topic_eng:
+#    generate_english_question_answer(out_question_path,topics,sentiment)
 
+###去除重复的问题
+def remove_same_question(out_question_path):
+    with open(out_question_path, 'r', encoding='utf-8') as file:
+        data_lines = file.readlines()
+    unique_questions = {}
+    for line in data_lines:
+        data = json.loads(line)
+        question = data['question']
+        if question not in unique_questions:
+            unique_questions[question] = data
+    with open(out_question_path, 'w', encoding='utf-8') as file:
+        for data in unique_questions.values():
+            file.write(json.dumps(data) + '\n')
+    print(f"去重后的数据已写入 {out_question_path}")
+
+remove_same_question(out_question_path)
