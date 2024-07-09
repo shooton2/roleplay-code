@@ -17,8 +17,10 @@ This file is used to generate role profile.
 3.running qa_answer_qwen_eng.py
 
 example:Abraham Lincoln
-This file is used to generate a given question and answer.
-In this section,user should give the topic and sentiment.Then , gpt-3.5 will generate one question based on the role_profile and topic and reply with the given sentiment.
+
+This file is used to talking about the given question.
+In this section,user should give the topic and sentiment.Then , qwen model will generate one question based on the role_profile and topic and reply with the given sentiment.
+Then the model will generate multi round dialogue.
 
 4.running rolebench_sentiment.py
 
