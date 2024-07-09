@@ -2,8 +2,8 @@
 
 1.previous step:
 
-We use gpt-3.5-turbo model to generate role profile , question and answer , multi-numbers dialogues with sentiment. 
-Download RoleBench datasets and input api_key or base_url.
+We use qwen2-7b-instruct model to generate role profile , multi round dialogue with sentiment and topic. 
+Download RoleBench datasets and qwen model from huggingface.
 
 https://huggingface.co/datasets/ZenMoore/RoleBench
 
