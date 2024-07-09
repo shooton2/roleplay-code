@@ -14,7 +14,7 @@ setting your output directory from every .py file.
 example:Abraham Lincoln
 This file is used to generate role profile.
 
-3.running question_answer_ge.py
+3.running qa_answer_eng.py
 
 example:Abraham Lincoln
 This file is used to generate a given question and answer.
